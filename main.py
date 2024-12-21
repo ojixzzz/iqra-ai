@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from transformers import pipeline
 from contextlib import asynccontextmanager
 from datetime import datetime
+from config import CLASIFICATION_MODEL, RECOGNITION_MODEL
 
 
 whisper_clasification = None
@@ -13,8 +14,8 @@ whisper_recognition = None
 def loadModel():
     global whisper_clasification
     global whisper_recognition
-    whisper_clasification = pipeline("audio-classification", "/Users/oji/Documents/Saucecode/Riset/whisper/whisper-base-ar-quran-ft-hijaiyah-2")
-    whisper_recognition = pipeline("automatic-speech-recognition", "/Users/oji/Documents/Saucecode/Riset/whisper/whisper-base-ar-quran")
+    whisper_clasification = pipeline("audio-classification", CLASIFICATION_MODEL)
+    whisper_recognition = pipeline("automatic-speech-recognition", RECOGNITION_MODEL)
 
 
 @asynccontextmanager
