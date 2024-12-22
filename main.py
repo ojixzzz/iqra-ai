@@ -1,3 +1,5 @@
+import faster_whisper
+from io import BytesIO
 from fastapi import FastAPI, UploadFile, Form
 from typing import Annotated
 from pydantic import BaseModel
@@ -15,7 +17,7 @@ def loadModel():
     global whisper_clasification
     global whisper_recognition
     whisper_clasification = pipeline("audio-classification", CLASIFICATION_MODEL)
-    whisper_recognition = pipeline("automatic-speech-recognition", RECOGNITION_MODEL)
+    whisper_recognition = faster_whisper.WhisperModel("../whisper-quran", device="cpu", compute_type="int8")
 
 
 @asynccontextmanager
@@ -45,5 +47,9 @@ def quran(secret: Annotated[str, Form()], file: UploadFile):
     global whisper_recognition
     audio = file.file.read()
     startdate = datetime.now()
-    recognition = whisper_recognition(audio)
-    return {"result": recognition["text"], "time": (datetime.now() - startdate)}
+    segments, info = whisper_recognition.transcribe(BytesIO(audio), beam_size=5)
+    result = []
+    for segment in segments:
+        result.append({"start": segment.start, "end": segment.end, "text": segment.text})
+
+    return {"result": result, "time": (datetime.now() - startdate)}
