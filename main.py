@@ -7,7 +7,6 @@ from transformers import pipeline
 from contextlib import asynccontextmanager
 from datetime import datetime
 from fastapi.responses import JSONResponse
-from config import CLASIFICATION_MODEL, RECOGNITION_MODEL
 
 
 whisper_clasification = None
@@ -17,8 +16,8 @@ whisper_recognition = None
 def loadModel():
     global whisper_clasification
     global whisper_recognition
-    whisper_clasification = pipeline("audio-classification", CLASIFICATION_MODEL)
-    whisper_recognition = faster_whisper.WhisperModel("../whisper-quran", device="cpu", compute_type="int8")
+    whisper_clasification = pipeline("audio-classification", "./whisper-base-ar-quran-ft-hijaiyah-2")
+    whisper_recognition = faster_whisper.WhisperModel("./whisper-quran", device="cpu", compute_type="int8")
 
 
 @asynccontextmanager
